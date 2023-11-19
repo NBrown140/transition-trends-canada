@@ -1,0 +1,26 @@
+name: Create and Commit File on First of Month
+
+on:
+  schedule:
+    # At 00:00 on the first day of every month
+    - cron: '0 0 1 * *'
+
+jobs:
+  create-and-commit-file:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Create png plots
+      run: |
+        pip install -r requirements.txt
+        python make_plots.py
+
+    - name: Commit and push
+      run: |
+        git config --global user.name 'Bot'
+        git config --global user.email 'bot@email.com'
+        git add *
+        git commit -m "Automated plots update: $(date '+%Y-%m-%d')"
+        git push origin main
