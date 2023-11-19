@@ -2,8 +2,8 @@ name: Create and Commit File on First of Month
 
 on:
   schedule:
-    # At 00:00 on the first day of every month
-    - cron: '0 0 1 * *'
+    # At 00:00 daily
+    - cron: '0 0 * * *'
 
 jobs:
   create-and-commit-file:
