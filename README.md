@@ -1,4 +1,4 @@
-# ghg-trends
+# transition-trends-canada
 
 # CO<sub>2</sub>
 ![co2](plots/co2.png)
