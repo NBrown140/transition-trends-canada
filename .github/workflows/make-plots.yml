@@ -22,7 +22,7 @@ jobs:
     - name: Create GHG plots
       run: |
         poetry install
-        python make_ghg_plots.py
+        poetry run python make_ghg_plots.py
 
     - name: setup git config
       run: |
