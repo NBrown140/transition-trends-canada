@@ -8,3 +8,8 @@
 
 # NO<sub>2</sub>
 ![co2](plots/no2.png)
+
+
+# Dev
+
+`poetry run python make_ghg_plots.py`

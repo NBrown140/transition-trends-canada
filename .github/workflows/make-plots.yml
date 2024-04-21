@@ -5,6 +5,8 @@ on:
     - cron: '0 0 1 * *'
 permissions:
   contents: write
+env:
+  POETRY_VERSION: '1.7.1'
 jobs:
   create-and-commit-file:
     runs-on: ubuntu-latest
@@ -12,10 +14,15 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Create png plots
+    - name: Install poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: ${{ env.POETRY_VERSION }}
+
+    - name: Create GHG plots
       run: |
-        pip install -r requirements.txt
-        python make_plots.py
+        poetry install
+        python make_ghg_plots.py
 
     - name: setup git config
       run: |

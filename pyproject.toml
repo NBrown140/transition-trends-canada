@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "transition-trends-canada"
+version = "0.2.0"
+description = "Trends of things"
+authors = ["Nicolas Brown"]
+readme = "README.md"
+packages = [{include = "ghg_trends"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pandas = "^2.1.4"
+matplotlib = "^3.8.2"
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
