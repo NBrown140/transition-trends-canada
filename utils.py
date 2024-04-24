@@ -7,12 +7,13 @@ import matplotlib.pyplot as plt
 import requests
 
 
-def plot_monthly_yearly_growth_rate(url: str, header: int, gas: str, color: str, out: str):
+def plot_monthly_yearly_growth_rate(url: str, header: int, gas: str, gas_unit: str, color: str, out: str):
     df = pd.read_csv(url, header=header)
     df["average_diff12"] = df["average"].diff(12)
     df["average_diff12_rollmean12"] = df["average"].diff(12).rolling(12, center=True).mean()
     fig, ax = plt.subplots()
     ax.set_title(f"Global Monthly Mean Atmospheric {gas} - Yearly Growth Rate")
+    ax.set_ylabel(f"[{gas_unit}]", style='italic')
     # for i, row in df_annual_gr.iterrows():
     #     if i == len(df_annual_gr)-1:  # Only add legend label once
     #         kwargs = {"label": "Annual Growth Rate"}
