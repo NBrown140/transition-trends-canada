@@ -2,11 +2,11 @@ name: Create and Commit File on First of Month
 on:
   schedule:
     # At 00:00 on day-of-month 1
-    - cron: '0 0 1 * *'
+    - cron: '0 0 * * *'
 permissions:
   contents: write
 env:
-  POETRY_VERSION: '1.7.1'
+  POETRY_VERSION: '1.8.2'
 jobs:
   create-and-commit-file:
     runs-on: ubuntu-latest
@@ -23,6 +23,11 @@ jobs:
       run: |
         poetry install
         poetry run python make_ghg_plots.py
+
+    - name: Create Vehicle Registrations plots
+      run: |
+        poetry install
+        poetry run python make_ev_registration_plots.py
 
     - name: setup git config
       run: |
