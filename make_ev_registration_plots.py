@@ -108,7 +108,7 @@ def plot_percentages_scatter_by_fuel_type(clean_dataset: pd.DataFrame, region: s
 if __name__ == "__main__":
     clean_dataset = read_and_clean_dataset()
 
-    regions = ["Canada", "Quebec", "Ontario", "British Columbia and the Territories", "Manitoba", "Alberta", "Saskatchewan", "New Brunswick", "Nova Scotia", "Prince Edward Island", "Newfoundland and Labrador"]
+    regions = ["Canada", "Quebec", "Ontario", "British Columbia and the Territories", "Manitoba", "Saskatchewan", "New Brunswick", "Prince Edward Island"]  # No data: ["Alberta", "Nova Scotia", "Newfoundland and Labrador"]
     for region in regions:
         reg_name = region.replace(" ", "").lower()
         plot_bar_chart_by_fuel_type(clean_dataset, region, f"plots/new_vehicle_registrations/{reg_name}_fuel_types.png")

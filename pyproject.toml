@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "transition-trends-canada"
-version = "0.2.0"
+version = "0.3.0"
 description = "Trends of things"
 authors = ["Nicolas Brown"]
 readme = "README.md"
-packages = [{include = "ghg_trends"}]
+packages = [{include = "transition_trends_canada"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
