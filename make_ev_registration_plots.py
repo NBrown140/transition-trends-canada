@@ -1,6 +1,6 @@
 # StatsCAN data
 # https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010002401
-# Citation: Statistics Canada. Table 20-10-0024-01  New motor vehicle registrations, quarterly
+# Citation: Statistics Canada. Table 20-10-0025-01  New motor vehicle registrations, quarterly, by geographic level
 
 from datetime import datetime
 from zipfile import ZipFile
@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-STATCAN_REGISTRATIONS_DATASET_URL = "https://www150.statcan.gc.ca/n1/tbl/csv/20100024-eng.zip"
-STACAN_REGISTRATIONS_CSV_NAME = "20100024.csv"
+STATCAN_REGISTRATIONS_DATASET_URL = "https://www150.statcan.gc.ca/n1/tbl/csv/20100025-eng.zip"
+STACAN_REGISTRATIONS_CSV_NAME = "20100025.csv"
 
 def date_to_quarter(date_str: str):
     year, month = date_str.split("-")
@@ -39,7 +39,12 @@ def read_and_clean_dataset():
     r = urllib2.urlopen(STATCAN_REGISTRATIONS_DATASET_URL).read()
     registrations_csv = ZipFile(BytesIO(r)).open(STACAN_REGISTRATIONS_CSV_NAME)
     registrations = pd.read_csv(registrations_csv, dtype=dtypes)
-    registrations.drop(columns=["DGUID", "Statistics", "UOM", "UOM_ID", "SCALAR_FACTOR", "SCALAR_ID", "VECTOR", "COORDINATE", "STATUS", "SYMBOL", "TERMINATED", "DECIMALS"], inplace=True)
+    
+    # Safely drop columns that might not exist
+    cols_to_drop = ["DGUID", "Statistics", "UOM", "UOM_ID", "SCALAR_FACTOR", "SCALAR_ID", "VECTOR", "COORDINATE", "STATUS", "SYMBOL", "TERMINATED", "DECIMALS"]
+    existing_cols = [c for c in cols_to_drop if c in registrations.columns]
+    registrations.drop(columns=existing_cols, inplace=True)
+    
     # Convert dates to quarters
     registrations["Quarter"] = registrations["REF_DATE"].apply(lambda x: date_to_quarter(x))
     # Aggregate by Fuel type
