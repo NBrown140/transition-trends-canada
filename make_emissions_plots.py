@@ -20,6 +20,11 @@ INK = "#2b2b2b"
 MUTED = "#6b6b6b"
 CO2_COLOR = "#6a9a23"
 GHG_COLOR = "#555555"
+METHOD_NOTE = (
+    "Green line: at each month end, Carbon Monitor's daily fossil CO$_2$ emissions (all sectors) are summed over the last 365 days\n"
+    "and compared with the sum of the 365 days ending one year earlier. Each point compares two 12-month totals, not single months.\n"
+    "Dashed (2020): less than 2 years of data, so the window is the year to date (e.g. Jan-Mar 2020 vs. Jan-Mar 2019)."
+)
 # x-axis is in decimal years: annual values sit mid-year, so each bar spans the calendar year it covers
 MID_YEAR = 0.5
 
@@ -100,7 +105,7 @@ def plot_emissions(owid: pd.DataFrame, cm_daily: pd.Series | None, name: str, ou
     vs_peak = (co2.iloc[-1] / co2[peak_year] - 1) * 100
     vs_2005 = (co2.iloc[-1] / co2[2005] - 1) * 100
     headline = f"Fossil CO$_2$ in {last_year}: {co2_change.iloc[-1]:+.1f}% vs. {last_year - 1}, {vs_2005:+.0f}% vs. 2005"
-    if peak_year != last_year:
+    if peak_year not in (last_year, 2005):
         headline += f", {vs_peak:+.0f}% vs. {peak_year} peak"
     ax.set_title(f"Greenhouse gas emissions - {name}", loc="left", fontsize=14, color=INK, pad=24)
     ax.text(0, 1.03, headline, transform=ax.transAxes, fontsize=9, color=MUTED)
@@ -134,7 +139,11 @@ def plot_emissions(owid: pd.DataFrame, cm_daily: pd.Series | None, name: str, ou
     ax2.set_xlim(xlim)
     sources = "Our World in Data / Global Carbon Budget" + (", Carbon Monitor" if cm_daily is not None else "")
     fig.text(0.99, 0.01, f"Data: {sources} · Updated on: {datetime.now():%Y-%m-%d}", ha="right", fontsize=7, color=MUTED)
-    fig.tight_layout()
+    if cm_daily is not None:
+        fig.text(0.01, 0.025, METHOD_NOTE, ha="left", va="bottom", fontsize=7, color=MUTED, linespacing=1.4)
+        fig.tight_layout(rect=(0, 0.065, 1, 1))
+    else:
+        fig.tight_layout(rect=(0, 0.02, 1, 1))
     fig.savefig(out, dpi=200)
     plt.close(fig)
 
