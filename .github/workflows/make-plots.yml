@@ -1,22 +1,24 @@
 # Examples using poetry in github workflows: https://github.com/snok/install-poetry?tab=readme-ov-file#workflow-examples-and-tips
 
-name: Create and Commit File on First of Month
+name: Update plots
 on:
   schedule:
     # At 00:00 on Sunday (once a week)
     - cron: '0 0 * * 0'
+  workflow_dispatch:  # allow manual runs from the Actions tab
 permissions:
   contents: write
 jobs:
   create-and-commit-file:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
 
     - name: Set up python
       id: setup-python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
 
@@ -31,12 +33,25 @@ jobs:
     - name: Install dependencies
       run: poetry install --no-interaction --no-root
 
+    # Each data source can fail independently (e.g. StatCan timing out); keep going so the
+    # plots that did succeed still get committed, then fail the job at the end.
     - name: Create GHG plots
+      id: ghg
+      continue-on-error: true
       run: |
         source $VENV
         python make_ghg_plots.py
 
+    - name: Create emissions plots
+      id: emissions
+      continue-on-error: true
+      run: |
+        source $VENV
+        python make_emissions_plots.py
+
     - name: Create Vehicle Registrations plots
+      id: ev
+      continue-on-error: true
       run: |
         source $VENV
         python make_ev_registration_plots.py
@@ -49,6 +64,16 @@ jobs:
 
     - name: Commit and push
       run: |
-        echo "Automated plots update: $(date '+%Y-%m-%d')"
-        git commit -am "Automated plots update: $(date '+%Y-%m-%d')"
-        git push origin main
+        git add plots
+        if git diff --cached --quiet; then
+          echo "No plot changes to commit"
+        else
+          git commit -m "Automated plots update: $(date '+%Y-%m-%d')"
+          git push origin main
+        fi
+
+    - name: Fail if any plot step failed
+      if: steps.ghg.outcome == 'failure' || steps.emissions.outcome == 'failure' || steps.ev.outcome == 'failure'
+      run: |
+        echo "GHG plots: ${{ steps.ghg.outcome }}, emissions plots: ${{ steps.emissions.outcome }}, vehicle registration plots: ${{ steps.ev.outcome }}"
+        exit 1

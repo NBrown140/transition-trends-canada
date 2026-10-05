@@ -5,11 +5,12 @@
 from datetime import datetime
 from zipfile import ZipFile
 from io import BytesIO
-import urllib.request as urllib2
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+from utils import download
 
 
 STATCAN_REGISTRATIONS_DATASET_URL = "https://www150.statcan.gc.ca/n1/tbl/csv/20100025-eng.zip"
@@ -39,7 +40,7 @@ def read_and_clean_dataset():
         "STATUS": "string",
     }
 
-    r = urllib2.urlopen(STATCAN_REGISTRATIONS_DATASET_URL).read()
+    r = download(STATCAN_REGISTRATIONS_DATASET_URL)
     registrations_csv = ZipFile(BytesIO(r)).open(STACAN_REGISTRATIONS_CSV_NAME)
     registrations = pd.read_csv(registrations_csv, dtype=dtypes, low_memory=False)
     
