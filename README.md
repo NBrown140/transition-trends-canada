@@ -38,17 +38,7 @@ Emissions measured at the source rather than in the atmosphere.
 ## World
 ![world](plots/emissions/world.png)
 
-## United States
-![usa](plots/emissions/usa.png)
-
-## China
-![china](plots/emissions/china.png)
-
-## France
-![france](plots/emissions/france.png)
-
-## Canada
-![canada](plots/emissions/canada.png)
+Per-country plots: [United States](plots/emissions/usa.png) · [China](plots/emissions/china.png) · [France](plots/emissions/france.png) · [Canada](plots/emissions/canada.png)
 
 # Canadian New Vehicle Registrations
 
